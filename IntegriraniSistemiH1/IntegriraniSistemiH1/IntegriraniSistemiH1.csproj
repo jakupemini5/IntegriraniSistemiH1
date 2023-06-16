@@ -15,12 +15,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.15" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\IntegriraniSistemiH1.DAL\IntegriraniSistemiH1.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Tickets\" />
-  </ItemGroup>
-
 </Project>
