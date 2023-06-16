@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegriraniSistemiH1", "IntegriraniSistemiH1\IntegriraniSistemiH1.csproj", "{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegriraniSistemiH1.DAL", "IntegriraniSistemiH1.DAL\IntegriraniSistemiH1.DAL.csproj", "{4547D648-2A8E-4192-895C-2CADB2B5E75B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4547D648-2A8E-4192-895C-2CADB2B5E75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4547D648-2A8E-4192-895C-2CADB2B5E75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4547D648-2A8E-4192-895C-2CADB2B5E75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4547D648-2A8E-4192-895C-2CADB2B5E75B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
