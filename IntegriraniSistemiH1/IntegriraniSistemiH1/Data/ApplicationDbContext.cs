@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using IntegriraniSistemiH1.Models;
 
 namespace IntegriraniSistemiH1.Data
 {
@@ -9,5 +10,6 @@ namespace IntegriraniSistemiH1.Data
             : base(options)
         {
         }
+        public DbSet<IntegriraniSistemiH1.Models.Ticket>? Ticket { get; set; }
     }
 }
