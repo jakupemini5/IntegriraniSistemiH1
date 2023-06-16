@@ -11,5 +11,6 @@ namespace IntegriraniSistemiH1.Data
         {
         }
         public DbSet<IntegriraniSistemiH1.Models.Ticket>? Ticket { get; set; }
+        public DbSet<IntegriraniSistemiH1.Models.Order>? Order { get; set; }
     }
 }
