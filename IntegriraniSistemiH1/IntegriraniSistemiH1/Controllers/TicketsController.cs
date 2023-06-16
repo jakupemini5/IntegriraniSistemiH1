@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IntegriraniSistemiH1.Data;
 using IntegriraniSistemiH1.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Net.Sockets;
 
 namespace IntegriraniSistemiH1.Controllers
 {
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tickets
@@ -156,6 +162,35 @@ namespace IntegriraniSistemiH1.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToCart(int? id)
+        {
+            if (ModelState.IsValid)
+            {
+                var asdf = User.Identity.Name;
+                var user = await _userManager.FindByEmailAsync(asdf);
+
+                var ticket = await _context.Ticket.FindAsync(id);
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+                if (user != null)
+                {
+                    user.ShoppingCart = new ShoppingCart() { Id = Guid.NewGuid().ToString()};
+                    await _userManager.UpdateAsync(user);
+                }
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
 
         private bool TicketExists(int id)
         {

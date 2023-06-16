@@ -4,6 +4,7 @@ using IntegriraniSistemiH1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntegriraniSistemiH1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230616184756_added-shopping-cart")]
+    partial class addedshoppingcart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,6 @@ namespace IntegriraniSistemiH1.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShoppingCartId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -113,7 +114,7 @@ namespace IntegriraniSistemiH1.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCart");
                 });
 
             modelBuilder.Entity("IntegriraniSistemiH1.Models.Ticket", b =>
@@ -294,9 +295,7 @@ namespace IntegriraniSistemiH1.Data.Migrations
                 {
                     b.HasOne("IntegriraniSistemiH1.Models.ShoppingCart", "ShoppingCart")
                         .WithMany()
-                        .HasForeignKey("ShoppingCartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShoppingCartId");
 
                     b.Navigation("ShoppingCart");
                 });
