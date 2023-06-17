@@ -98,10 +98,15 @@ namespace IntegriraniSistemiH1.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("DatePurchased")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Order");
                 });
@@ -301,6 +306,13 @@ namespace IntegriraniSistemiH1.Data.Migrations
                     b.Navigation("ShoppingCart");
                 });
 
+            modelBuilder.Entity("IntegriraniSistemiH1.Models.Order", b =>
+                {
+                    b.HasOne("IntegriraniSistemiH1.Models.ApplicationUser", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
             modelBuilder.Entity("IntegriraniSistemiH1.Models.Ticket", b =>
                 {
                     b.HasOne("IntegriraniSistemiH1.Models.Order", null)
@@ -361,6 +373,11 @@ namespace IntegriraniSistemiH1.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("IntegriraniSistemiH1.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("IntegriraniSistemiH1.Models.Order", b =>
