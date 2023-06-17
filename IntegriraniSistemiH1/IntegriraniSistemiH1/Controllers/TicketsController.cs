@@ -171,6 +171,7 @@ namespace IntegriraniSistemiH1.Controllers
             {
                 var userEmail = User.Identity.Name;
                 var user = await _userManager.FindByEmailAsync(userEmail);
+                user.PhoneNumber = "123";
 
                 var ticket = await _context.Ticket.FindAsync(id);
                 if (ticket == null)
@@ -179,15 +180,9 @@ namespace IntegriraniSistemiH1.Controllers
                 }
                 if (user != null)
                 {
-                    if(user.ShoppingCart == null)
-                    {
-                        user.ShoppingCart = new ShoppingCart() { Id = Guid.NewGuid().ToString(), Tickets = new List<Ticket>() };
-                    }
                     user.ShoppingCart.Tickets.Add(ticket);
-                    
                     await _userManager.UpdateAsync(user);
                 }
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }

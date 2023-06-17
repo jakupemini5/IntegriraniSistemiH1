@@ -1,5 +1,6 @@
 ﻿using IntegriraniSistemiH1.Data;
 using IntegriraniSistemiH1.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,18 +9,27 @@ namespace IntegriraniSistemiH1.Controllers
     public class ShoppingCartsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ShoppingCartsController(ApplicationDbContext context)
+        public ShoppingCartsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ShoppingCarts
         public async Task<IActionResult> Index()
         {
-            return _context.ShoppingCarts != null ?
-                        View(await _context.ShoppingCarts.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.ShoppingCarts'  is null.");
+            var userEmail = User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            if (user != null)
+            {
+                var tickets = user.ShoppingCart?.Tickets?.ToList();
+                return View(tickets);
+            }
+
+            return Problem("Entity set 'ApplicationDbContext.ShoppingCarts'  is null.");
         }
 
         // GET: ShoppingCarts/Details/5
@@ -114,21 +124,20 @@ namespace IntegriraniSistemiH1.Controllers
         }
 
         // GET: ShoppingCarts/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.ShoppingCarts == null)
+            var userEmail = User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            if (user != null)
             {
-                return NotFound();
+                var ticket = user.ShoppingCart.Tickets.FirstOrDefault(ticket => ticket.Id == id);
+                user.ShoppingCart.Tickets.Remove(ticket);
+
+                await _userManager.UpdateAsync(user);
             }
 
-            var shoppingCart = await _context.ShoppingCarts
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (shoppingCart == null)
-            {
-                return NotFound();
-            }
-
-            return View(shoppingCart);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: ShoppingCarts/Delete/5
