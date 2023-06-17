@@ -36,12 +36,21 @@ namespace IntegriraniSistemiH1.Data
                         ConcurrencyStamp = Guid.NewGuid().ToString("D")
 
                     };
+                    IdentityRole identityRoleUser = new IdentityRole()
+                    {
+                        Id = Guid.NewGuid().ToString("D"),
+                        Name = "User",
+                        NormalizedName = "User".ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString("D")
+
+                    };
 
                     IdentityUserRole<string> identityUserRoleAdmin = new IdentityUserRole<string>()
                     {
                         RoleId = identityRoleAdmin.Id,
                         UserId = admin.Id
                     };
+                    context.Roles.Add(identityRoleUser);
 
                     context.Roles.Add(identityRoleAdmin);
                     context.Users.Add(admin);

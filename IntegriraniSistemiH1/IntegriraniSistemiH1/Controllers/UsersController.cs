@@ -50,8 +50,8 @@ namespace IntegriraniSistemiH1.Controllers
         public FileResult DownloadCSV()
         {
             // Generate the CSV content
-            var csvContent = "UserName,Password\n";
-            csvContent += "test@gmail.com,TestPassword\n";
+            var csvContent = "UserName,Password,Role\n";
+            csvContent += "test@gmail.com,TestPassword,(User or Admin)\n";
 
             // Convert the CSV content to bytes
             var csvBytes = Encoding.UTF8.GetBytes(csvContent);
@@ -60,7 +60,7 @@ namespace IntegriraniSistemiH1.Controllers
             return File(csvBytes, "text/csv", "users.csv");
         }
 
-        public IActionResult ProcessCSV(IFormFile csvFile)
+        public async Task<IActionResult> ProcessCSV(IFormFile csvFile)
         {
             if (csvFile != null && csvFile.Length > 0)
             {
@@ -71,6 +71,33 @@ namespace IntegriraniSistemiH1.Controllers
                 }))
                 {
                     var records = csv.GetRecords<UserImport>().ToList();
+                    foreach(var record in records)
+                    {
+                        PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+
+                        var user = new ApplicationUser()
+                        {
+                            Id = Guid.NewGuid().ToString("D"),
+                            Email = record.UserName,
+                            NormalizedEmail = record.UserName.ToUpper(),
+                            EmailConfirmed = true,
+                            UserName = record.UserName,
+                            NormalizedUserName = record.UserName.ToUpper(),
+                            SecurityStamp = Guid.NewGuid().ToString("D"),
+                        };
+                        user.PasswordHash = hasher.HashPassword(user, record.Password);
+
+                        await _userManager.CreateAsync(user);
+
+                        if(record.Role.ToLower() == "admin")
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                        else
+                            await _userManager.AddToRoleAsync(user, "User");
+
+                        await _userManager.UpdateAsync(user);
+
+                    }
+
 
                     return RedirectToAction("Index");
                 }

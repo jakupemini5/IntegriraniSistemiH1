@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegriraniSistemiH1", "IntegriraniSistemiH1\IntegriraniSistemiH1.csproj", "{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegriraniSistemiH1", "IntegriraniSistemiH1\IntegriraniSistemiH1.csproj", "{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegriraniSistemiH1.BLL", "IntegriraniSistemiH1.BLL\IntegriraniSistemiH1.BLL.csproj", "{BF0DE1F8-208F-4972-9127-216D06785006}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegriraniSistemiH1.DAL", "IntegriraniSistemiH1.DAL\IntegriraniSistemiH1.DAL.csproj", "{B8EACBDE-A924-4009-AB60-FF87B79389B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A9AA5B3-F01E-4F5A-9460-1F16AE70A7F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF0DE1F8-208F-4972-9127-216D06785006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF0DE1F8-208F-4972-9127-216D06785006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF0DE1F8-208F-4972-9127-216D06785006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF0DE1F8-208F-4972-9127-216D06785006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8EACBDE-A924-4009-AB60-FF87B79389B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8EACBDE-A924-4009-AB60-FF87B79389B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8EACBDE-A924-4009-AB60-FF87B79389B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8EACBDE-A924-4009-AB60-FF87B79389B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
