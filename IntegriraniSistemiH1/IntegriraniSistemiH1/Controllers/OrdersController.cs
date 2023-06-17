@@ -7,42 +7,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IntegriraniSistemiH1.Data;
 using IntegriraniSistemiH1.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace IntegriraniSistemiH1.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext context)
+
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return _context.Order != null ?
-                        View(await _context.Order.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Order'  is null.");
+            var userEmail = User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            return View(user.Orders.OrderByDescending(ticket => ticket.DatePurchased).ToList());
         }
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Order == null)
-            {
-                return NotFound();
-            }
+            var userEmail = User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(userEmail);
 
-            var order = await _context.Order
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
+            return View(user.Orders.FirstOrDefault(order => order.Id == id));
         }
 
         // GET: Orders/Create

@@ -3,6 +3,7 @@ using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 
 namespace IntegriraniSistemiH1.Controllers
 {
@@ -156,6 +157,34 @@ namespace IntegriraniSistemiH1.Controllers
             }
 
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PurchaseShoppingCart()
+        {
+            if (ModelState.IsValid)
+            {
+                var userEmail = User.Identity.Name;
+                var user = await _userManager.FindByEmailAsync(userEmail);
+
+                var order = new Order()
+                {
+                    DatePurchased = DateTime.UtcNow,
+                    Id = Guid.NewGuid().ToString(),
+                    Tickets = new List<Ticket>()
+                };
+                order.Tickets.AddRange(user.ShoppingCart.Tickets.ToList());
+
+                user.Orders.Add(order);
+                user.ShoppingCart.Tickets = new List<Ticket>();
+
+                await _userManager.UpdateAsync(user);
+
+                return RedirectToAction(nameof(Index));
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

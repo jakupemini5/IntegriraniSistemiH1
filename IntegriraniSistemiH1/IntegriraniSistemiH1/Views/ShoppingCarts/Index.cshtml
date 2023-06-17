@@ -6,11 +6,24 @@
 
 <h1>Shopping Cart</h1>
 
+<form asp-action="PurchaseShoppingCart" method="post">
+    <button type="submit">Purchase</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateExpired)
             </th>
         </tr>
     </thead>
