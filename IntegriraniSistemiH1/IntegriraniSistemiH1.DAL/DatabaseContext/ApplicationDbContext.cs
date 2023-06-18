@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using IntegriraniSistemiH1.DAL.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using IntegriraniSistemiH1.Models;
 
-namespace IntegriraniSistemiH1.Data
+namespace IntegriraniSistemiH1.DAL.DatabaseContext
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -10,9 +10,9 @@ namespace IntegriraniSistemiH1.Data
             : base(options)
         {
         }
-        public DbSet<IntegriraniSistemiH1.Models.Ticket>? Ticket { get; set; }
-        public DbSet<IntegriraniSistemiH1.Models.Order>? Order { get; set; }
-        public DbSet<IntegriraniSistemiH1.Models.ShoppingCart>? ShoppingCarts { get; set; }
+        public DbSet<Ticket>? Ticket { get; set; }
+        public DbSet<Order>? Order { get; set; }
+        public DbSet<ShoppingCart>? ShoppingCarts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

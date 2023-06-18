@@ -1,4 +1,4 @@
-﻿namespace IntegriraniSistemiH1.Models
+﻿namespace IntegriraniSistemiH1.DAL.Entities
 {
     public class UserImport
     {

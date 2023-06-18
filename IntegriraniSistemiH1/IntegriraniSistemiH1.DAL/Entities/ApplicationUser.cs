@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace IntegriraniSistemiH1.Models
+namespace IntegriraniSistemiH1.DAL.Entities
 {
     public class ApplicationUser : IdentityUser
     {

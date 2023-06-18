@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Sockets;
+using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
+using IntegriraniSistemiH1.BLL.Services.Interfaces;
 
 namespace IntegriraniSistemiH1.Controllers
 {
@@ -16,41 +17,31 @@ namespace IntegriraniSistemiH1.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ITicketsService _ticketService;
+        private readonly IShoppingCartService _shoppingCartService;
 
         public TicketsController(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ITicketsService ticketService,
+            IShoppingCartService shoppingCartService)
         {
             _context = context;
             _userManager = userManager;
+            _ticketService = ticketService;
+            _shoppingCartService = shoppingCartService;
         }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            var claims = User.Claims.ToList();
-            return _context.Ticket != null ?
-                        View(await _context.Ticket.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Ticket'  is null.");
+            return View(await _ticketService.GetAllTickets());
         }
 
         // GET: Tickets/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            
-            if (id == null || _context.Ticket == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticket);
+            return View(await _ticketService.GetTicketById(id));
         }
 
         // GET: Tickets/Create
@@ -64,30 +55,20 @@ namespace IntegriraniSistemiH1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateCreated,DateExpired")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateCreated,DateExpired,Price")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
+                await _ticketService.CreateTicket(ticket);
                 return RedirectToAction(nameof(Index));
             }
             return View(ticket);
         }
 
         // GET: Tickets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Ticket == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+            var ticket = await _ticketService.GetTicketById(id);
             return View(ticket);
         }
 
@@ -96,51 +77,16 @@ namespace IntegriraniSistemiH1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateCreated,DateExpired")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateCreated,DateExpired,Price")] Ticket ticket)
         {
-            if (id != ticket.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TicketExists(ticket.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            await _ticketService.UpdateTicket(ticket);
             return View(ticket);
         }
 
         // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Ticket == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
+            var ticket = await _ticketService.GetTicketById(id);
             return View(ticket);
         }
 
@@ -149,40 +95,21 @@ namespace IntegriraniSistemiH1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Ticket == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Ticket'  is null.");
-            }
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Ticket.Remove(ticket);
-            }
-
-            await _context.SaveChangesAsync();
+            await _ticketService.DeleteTicket(id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(int? id)
+        public async Task<IActionResult> AddToCart(int id)
         {
             if (ModelState.IsValid)
             {
                 var userEmail = User.Identity.Name;
                 var user = await _userManager.FindByEmailAsync(userEmail);
-                user.PhoneNumber = "123";
 
-                var ticket = await _context.Ticket.FindAsync(id);
-                if (ticket == null)
-                {
-                    return NotFound();
-                }
-                if (user != null)
-                {
-                    user.ShoppingCart.Tickets.Add(ticket);
-                    await _userManager.UpdateAsync(user);
-                }
+                var ticket = await _ticketService.GetTicketById(id);
+                await _shoppingCartService.AddTicketToCart(user, ticket);
 
                 return RedirectToAction(nameof(Index));
             }

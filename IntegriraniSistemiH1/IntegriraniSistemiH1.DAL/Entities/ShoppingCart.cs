@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IntegriraniSistemiH1.Models
+namespace IntegriraniSistemiH1.DAL.Entities
 {
     public class ShoppingCart
     {

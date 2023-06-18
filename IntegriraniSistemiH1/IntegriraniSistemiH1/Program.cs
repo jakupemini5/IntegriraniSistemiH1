@@ -1,5 +1,10 @@
-using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
+using IntegriraniSistemiH1.BLL.Services.Implementations;
+using IntegriraniSistemiH1.BLL.Services.Interfaces;
+using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
+using IntegriraniSistemiH1.DAL.Repositories.Implementations;
+using IntegriraniSistemiH1.DAL.Repositories.Interfaces;
+using IntegriraniSistemiH1.DatabaseContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +22,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<IOrdersService, OrdersService>();
+builder.Services.AddTransient<ITicketsService, TicketsService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
+builder.Services.AddTransient<IOrdersRepository, OrdersRepository>();
+builder.Services.AddTransient<ITicketsRepository, TicketsRepository>();
+builder.Services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
 
 var app = builder.Build();
 
