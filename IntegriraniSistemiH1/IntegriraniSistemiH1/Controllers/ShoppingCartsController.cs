@@ -1,10 +1,13 @@
 ﻿
+using IntegriraniSistemiH1.BLL.Services.Interfaces;
 using IntegriraniSistemiH1.DAL.DatabaseContext;
 using IntegriraniSistemiH1.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json.Serialization;
+using System.Drawing.Text;
 
 namespace IntegriraniSistemiH1.Controllers
 {
@@ -12,11 +15,13 @@ namespace IntegriraniSistemiH1.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IShoppingCartService _shoppingCartService;
 
-        public ShoppingCartsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ShoppingCartsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IShoppingCartService shoppingCartService)
         {
             _context = context;
             _userManager = userManager;
+            _shoppingCartService = shoppingCartService;
         }
 
         // GET: ShoppingCarts
@@ -34,98 +39,6 @@ namespace IntegriraniSistemiH1.Controllers
             return Problem("Entity set 'ApplicationDbContext.ShoppingCarts'  is null.");
         }
 
-        // GET: ShoppingCarts/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _context.ShoppingCarts == null)
-            {
-                return NotFound();
-            }
-
-            var shoppingCart = await _context.ShoppingCarts
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (shoppingCart == null)
-            {
-                return NotFound();
-            }
-
-            return View(shoppingCart);
-        }
-
-        // GET: ShoppingCarts/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ShoppingCarts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] ShoppingCart shoppingCart)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(shoppingCart);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(shoppingCart);
-        }
-
-        // GET: ShoppingCarts/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.ShoppingCarts == null)
-            {
-                return NotFound();
-            }
-
-            var shoppingCart = await _context.ShoppingCarts.FindAsync(id);
-            if (shoppingCart == null)
-            {
-                return NotFound();
-            }
-            return View(shoppingCart);
-        }
-
-        // POST: ShoppingCarts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id")] ShoppingCart shoppingCart)
-        {
-            if (id != shoppingCart.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(shoppingCart);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ShoppingCartExists(shoppingCart.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(shoppingCart);
-        }
-
-        // GET: ShoppingCarts/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var userEmail = User.Identity.Name;
@@ -133,31 +46,9 @@ namespace IntegriraniSistemiH1.Controllers
 
             if (user != null)
             {
-                var ticket = user.ShoppingCart.Tickets.FirstOrDefault(ticket => ticket.Id == id);
-                user.ShoppingCart.Tickets.Remove(ticket);
-
-                await _userManager.UpdateAsync(user);
+                await _shoppingCartService.RemoveTicketFromCart(user, id);
             }
 
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: ShoppingCarts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.ShoppingCarts == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.ShoppingCarts'  is null.");
-            }
-            var shoppingCart = await _context.ShoppingCarts.FindAsync(id);
-            if (shoppingCart != null)
-            {
-                _context.ShoppingCarts.Remove(shoppingCart);
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -170,28 +61,12 @@ namespace IntegriraniSistemiH1.Controllers
                 var userEmail = User.Identity.Name;
                 var user = await _userManager.FindByEmailAsync(userEmail);
 
-                var order = new Order()
-                {
-                    DatePurchased = DateTime.UtcNow,
-                    Id = Guid.NewGuid().ToString(),
-                    Tickets = new List<Ticket>()
-                };
-                order.Tickets.AddRange(user.ShoppingCart.Tickets.ToList());
-
-                user.Orders.Add(order);
-                user.ShoppingCart.Tickets = new List<Ticket>();
-
-                await _userManager.UpdateAsync(user);
+                await _shoppingCartService.PurchaseShoppingCart(user);
 
                 return RedirectToAction(nameof(Index));
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ShoppingCartExists(string id)
-        {
-            return (_context.ShoppingCarts?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

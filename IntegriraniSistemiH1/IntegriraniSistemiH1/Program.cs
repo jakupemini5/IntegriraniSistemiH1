@@ -24,10 +24,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IOrdersService, OrdersService>();
 builder.Services.AddTransient<ITicketsService, TicketsService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
 builder.Services.AddTransient<IOrdersRepository, OrdersRepository>();
 builder.Services.AddTransient<ITicketsRepository, TicketsRepository>();
-
+builder.Services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
 
 var app = builder.Build();
 
