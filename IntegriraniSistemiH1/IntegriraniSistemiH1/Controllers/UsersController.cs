@@ -89,6 +89,9 @@ namespace IntegriraniSistemiH1.Controllers
                     foreach(var record in records)
                     {
                         PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+                        var foundUser = await _userManager.FindByNameAsync(record.UserName);
+                        if (foundUser != null)
+                            continue;
 
                         var user = new ApplicationUser()
                         {
@@ -102,9 +105,16 @@ namespace IntegriraniSistemiH1.Controllers
                         };
                         user.PasswordHash = hasher.HashPassword(user, record.Password);
 
-                        await _userManager.CreateAsync(user);
+                        try
+                        {
+                            await _userManager.CreateAsync(user);
 
-                        if(record.Role.ToLower() == "admin")
+                        }catch (Exception ex)
+                        {
+
+                        }
+
+                        if (record.Role.ToLower() == "admin")
                             await _userManager.AddToRoleAsync(user, "Admin");
                         else
                             await _userManager.AddToRoleAsync(user, "User");

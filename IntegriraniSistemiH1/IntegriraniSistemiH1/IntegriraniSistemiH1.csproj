@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IntegriraniSistemiH1.BLL\IntegriraniSistemiH1.BLL.csproj" />
     <ProjectReference Include="..\IntegriraniSistemiH1.DAL\IntegriraniSistemiH1.DAL.csproj" />
   </ItemGroup>
 
