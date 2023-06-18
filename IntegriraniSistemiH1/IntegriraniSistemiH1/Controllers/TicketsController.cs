@@ -18,15 +18,18 @@ namespace IntegriraniSistemiH1.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITicketsService _ticketService;
+        private readonly IShoppingCartService _shoppingCartService;
 
         public TicketsController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            ITicketsService ticketService)
+            ITicketsService ticketService,
+            IShoppingCartService shoppingCartService)
         {
             _context = context;
             _userManager = userManager;
             _ticketService = ticketService;
+            _shoppingCartService = shoppingCartService;
         }
 
         // GET: Tickets
@@ -98,24 +101,15 @@ namespace IntegriraniSistemiH1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(int? id)
+        public async Task<IActionResult> AddToCart(int id)
         {
             if (ModelState.IsValid)
             {
                 var userEmail = User.Identity.Name;
                 var user = await _userManager.FindByEmailAsync(userEmail);
-                user.PhoneNumber = "123";
 
-                var ticket = await _context.Ticket.FindAsync(id);
-                if (ticket == null)
-                {
-                    return NotFound();
-                }
-                if (user != null)
-                {
-                    user.ShoppingCart.Tickets.Add(ticket);
-                    await _userManager.UpdateAsync(user);
-                }
+                var ticket = await _ticketService.GetTicketById(id);
+                await _shoppingCartService.AddTicketToCart(user, ticket);
 
                 return RedirectToAction(nameof(Index));
             }

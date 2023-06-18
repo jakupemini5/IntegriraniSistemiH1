@@ -10,6 +10,7 @@ namespace IntegriraniSistemiH1.BLL.Services.Interfaces
     public interface IShoppingCartService
     {
         Task<ShoppingCart> GetShoppingCartById(string id);
+        Task AddTicketToCart(ApplicationUser user, Ticket ticket);
         Task RemoveTicketFromCart(ApplicationUser user, int ticketId);
         Task PurchaseShoppingCart(ApplicationUser user);
     }

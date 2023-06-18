@@ -33,6 +33,13 @@ namespace IntegriraniSistemiH1.BLL.Services.Implementations
             return foundShoppingCart;
         }
 
+        public async Task AddTicketToCart(ApplicationUser user, Ticket ticket)
+        {
+            user.ShoppingCart.Tickets.Add(ticket);
+
+            await _userManager.UpdateAsync(user);
+        }
+
         public async Task RemoveTicketFromCart(ApplicationUser user, int ticketId)
         {
             var ticket = user.ShoppingCart.Tickets.FirstOrDefault(ticket => ticket.Id == ticketId);
@@ -43,18 +50,21 @@ namespace IntegriraniSistemiH1.BLL.Services.Implementations
 
         public async Task PurchaseShoppingCart(ApplicationUser user)
         {
-            var order = new Order()
+            if(user.ShoppingCart.Tickets.Count() > 0)
             {
-                DatePurchased = DateTime.UtcNow,
-                Id = Guid.NewGuid().ToString(),
-                Tickets = new List<Ticket>()
-            };
-            order.Tickets.AddRange(user.ShoppingCart.Tickets.ToList());
+                var order = new Order()
+                {
+                    DatePurchased = DateTime.UtcNow,
+                    Id = Guid.NewGuid().ToString(),
+                    Tickets = new List<Ticket>()
+                };
+                order.Tickets.AddRange(user.ShoppingCart.Tickets.ToList());
 
-            user.Orders.Add(order);
-            user.ShoppingCart.Tickets = new List<Ticket>();
+                user.Orders.Add(order);
+                user.ShoppingCart.Tickets = new List<Ticket>();
 
-            await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(user);
+            }
         }
     }
 }

@@ -18,18 +18,6 @@ namespace IntegriraniSistemiH1.BLL.Services.Implementations
             _ordersRepository = ordersRepository;
         }
 
-        public async Task CreateOrder(Order item)
-        {
-            await _ordersRepository.CreateOrder(item);
-        }
-
-        public async Task<Order> DeleteOrder(string id)
-        {
-            var order = await GetOrderById(id);
-            await _ordersRepository.DeleteOrder(order);
-            return order;
-        }
-
         public async Task<Order> GetOrderById(string id)
         {
             var foundOrder = await _ordersRepository.GetOrderById(id);
@@ -38,6 +26,11 @@ namespace IntegriraniSistemiH1.BLL.Services.Implementations
                 throw new KeyNotFoundException();
             }
             return foundOrder;
+        }
+
+        public async Task<List<Order>> GetUsersOrders(ApplicationUser user)
+        {
+            return user.Orders.OrderByDescending(order => order.DatePurchased).ToList();
         }
     }
 }

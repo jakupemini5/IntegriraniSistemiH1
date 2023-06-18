@@ -2,6 +2,7 @@
 using IntegriraniSistemiH1.DAL.Entities;
 using IntegriraniSistemiH1.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace IntegriraniSistemiH1.DAL.Repositories.Implementations
 {
@@ -17,18 +18,6 @@ namespace IntegriraniSistemiH1.DAL.Repositories.Implementations
         public async Task<Order> GetOrderById(string id)
         {
             return await _context.Order.FirstOrDefaultAsync(order => order.Id == id);
-        }
-
-        public async Task CreateOrder(Order order)
-        {
-            _context.Add(order);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteOrder(Order order)
-        {
-            _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
         }
     }
 }

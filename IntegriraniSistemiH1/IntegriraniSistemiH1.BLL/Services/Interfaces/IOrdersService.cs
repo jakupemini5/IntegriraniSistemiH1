@@ -9,8 +9,7 @@ namespace IntegriraniSistemiH1.BLL.Services.Interfaces
 {
     public interface IOrdersService
     {
-        Task CreateOrder(Order item);
-        Task<Order> DeleteOrder(string id);
         Task<Order> GetOrderById(string id);
+        Task<List<Order>> GetUsersOrders(ApplicationUser user);
     }
 }
