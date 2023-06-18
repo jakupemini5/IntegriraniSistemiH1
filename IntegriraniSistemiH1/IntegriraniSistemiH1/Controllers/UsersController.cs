@@ -1,9 +1,11 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using IntegriraniSistemiH1.Data;
 using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Text;
@@ -12,11 +14,13 @@ namespace IntegriraniSistemiH1.Controllers
 {
     public class UsersController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         // GET: UsersController
@@ -27,24 +31,35 @@ namespace IntegriraniSistemiH1.Controllers
         }
 
         // GET: UsersController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            var user = _userManager.Users.FirstOrDefault(user => user.Id == id);
+            return View(user);
         }
 
         // POST: UsersController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            try
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.ShoppingCarts.Remove(user.ShoppingCart);
+                    _context.Order.RemoveRange(user.Orders);
+
+                    await _context.SaveChangesAsync();
+                    await _userManager.DeleteAsync(user);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         public FileResult DownloadCSV()
