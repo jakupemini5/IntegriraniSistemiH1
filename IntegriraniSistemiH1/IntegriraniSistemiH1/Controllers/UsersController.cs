@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
+using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

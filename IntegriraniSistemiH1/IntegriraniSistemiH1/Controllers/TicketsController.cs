@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Sockets;
+using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
 
 namespace IntegriraniSistemiH1.Controllers
 {

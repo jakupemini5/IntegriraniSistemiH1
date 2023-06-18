@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
+﻿using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntegriraniSistemiH1.Controllers
 {

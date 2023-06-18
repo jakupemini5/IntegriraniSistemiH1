@@ -1,5 +1,6 @@
+using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
 using IntegriraniSistemiH1.Data;
-using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

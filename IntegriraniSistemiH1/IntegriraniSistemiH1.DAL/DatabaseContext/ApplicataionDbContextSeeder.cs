@@ -1,7 +1,8 @@
-﻿using IntegriraniSistemiH1.Models;
+﻿using IntegriraniSistemiH1.DAL.DatabaseContext;
+using IntegriraniSistemiH1.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IntegriraniSistemiH1.Data
 {
