@@ -23,9 +23,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IOrdersService, OrdersService>();
-
+builder.Services.AddTransient<ITicketsService, TicketsService>();
 
 builder.Services.AddTransient<IOrdersRepository, OrdersRepository>();
+builder.Services.AddTransient<ITicketsRepository, TicketsRepository>();
 
 
 var app = builder.Build();
