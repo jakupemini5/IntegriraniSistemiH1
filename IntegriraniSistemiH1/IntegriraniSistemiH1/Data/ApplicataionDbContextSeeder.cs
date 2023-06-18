@@ -1,5 +1,6 @@
 ﻿using IntegriraniSistemiH1.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace IntegriraniSistemiH1.Data
@@ -11,8 +12,11 @@ namespace IntegriraniSistemiH1.Data
             using (IServiceScope serviceScope = applicationServices.CreateScope())
             {
                 ApplicationDbContext context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                if (context.Database.EnsureCreated())
+
+                if (context.Database.GetPendingMigrations().Any())
                 {
+                    context.Database.Migrate();
+
                     PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
 
                     ApplicationUser admin = new ApplicationUser()
@@ -36,12 +40,21 @@ namespace IntegriraniSistemiH1.Data
                         ConcurrencyStamp = Guid.NewGuid().ToString("D")
 
                     };
+                    IdentityRole identityRoleUser = new IdentityRole()
+                    {
+                        Id = Guid.NewGuid().ToString("D"),
+                        Name = "User",
+                        NormalizedName = "User".ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString("D")
+
+                    };
 
                     IdentityUserRole<string> identityUserRoleAdmin = new IdentityUserRole<string>()
                     {
                         RoleId = identityRoleAdmin.Id,
                         UserId = admin.Id
                     };
+                    context.Roles.Add(identityRoleUser);
 
                     context.Roles.Add(identityRoleAdmin);
                     context.Users.Add(admin);
