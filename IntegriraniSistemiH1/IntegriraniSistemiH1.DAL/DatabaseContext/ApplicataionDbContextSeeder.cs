@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IntegriraniSistemiH1.Data
+namespace IntegriraniSistemiH1.DatabaseContext
 {
     public class ApplicataionDbContextSeeder
     {
