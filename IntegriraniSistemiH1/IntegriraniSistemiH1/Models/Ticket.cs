@@ -7,6 +7,6 @@
         public string Description { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateExpired { get; set; }
-
+        public float Price { get; set; }
     }
 }
