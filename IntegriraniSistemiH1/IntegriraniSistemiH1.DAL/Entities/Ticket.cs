@@ -1,4 +1,6 @@
-﻿namespace IntegriraniSistemiH1.DAL.Entities
+﻿using IntegriraniSistemiH1.DAL.Enums;
+
+namespace IntegriraniSistemiH1.DAL.Entities
 {
     public class Ticket
     {
@@ -8,5 +10,6 @@
         public DateTime DateCreated { get; set; }
         public DateTime DateExpired { get; set; }
         public float Price { get; set; }
+        public MovieType Type { get; set; }
     }
 }

@@ -7,6 +7,12 @@
 <h1>Details</h1>
 
 <div>
+    <form action="@Url.Action("GeneratePDF", "Orders")" method="post">
+        <input type="submit" value="Download PDF" />
+    </form>
+</div>
+
+<div>
     <h4>Order</h4>
     <hr />
     <dl class="row">
@@ -33,6 +39,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().DateExpired)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Type)
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -51,6 +63,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DateExpired)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type))
                     </td>
                 </tr>
             }
