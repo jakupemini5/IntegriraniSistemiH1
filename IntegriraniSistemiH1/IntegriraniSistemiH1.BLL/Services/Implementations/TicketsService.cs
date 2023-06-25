@@ -46,9 +46,15 @@ namespace IntegriraniSistemiH1.BLL.Services.Implementations
             return foundOrder;
         }
 
-        public async Task<List<Ticket>> GetAllTickets()
+        public async Task<List<Ticket>> GetAllTickets(TicketFilterModel ticketFilter)
         {
-            return await _ticketsRepository.GetAllTickets();
+            var result = await _ticketsRepository.GetAllTickets();
+            if (ticketFilter != null && ticketFilter.MovieType != null)
+            {
+                return result.Where(ticket => ticket.Type == ticketFilter.MovieType).ToList();
+            }
+            else
+                return result;
         }
     }
 }

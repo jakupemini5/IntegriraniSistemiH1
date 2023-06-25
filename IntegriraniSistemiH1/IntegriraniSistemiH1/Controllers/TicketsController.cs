@@ -10,6 +10,10 @@ using System.Net.Sockets;
 using IntegriraniSistemiH1.DAL.DatabaseContext;
 using IntegriraniSistemiH1.DAL.Entities;
 using IntegriraniSistemiH1.BLL.Services.Interfaces;
+using IntegriraniSistemiH1.Models;
+using CsvHelper;
+using System.Globalization;
+using System.Text;
 
 namespace IntegriraniSistemiH1.Controllers
 {
@@ -33,9 +37,9 @@ namespace IntegriraniSistemiH1.Controllers
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery]TicketFilterModel? filterModel)
         {
-            return View(await _ticketService.GetAllTickets());
+            return View(await _ticketService.GetAllTickets(filterModel));
         }
 
         // GET: Tickets/Details/5
@@ -55,7 +59,7 @@ namespace IntegriraniSistemiH1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateCreated,DateExpired,Price")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateCreated,DateExpired,Price,Type")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +81,7 @@ namespace IntegriraniSistemiH1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateCreated,DateExpired,Price")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateCreated,DateExpired,Price,Type")] Ticket ticket)
         {
             await _ticketService.UpdateTicket(ticket);
             return View(ticket);
@@ -118,10 +122,20 @@ namespace IntegriraniSistemiH1.Controllers
         }
 
 
-
-        private bool TicketExists(int id)
+        public async Task<ActionResult> ExportTicketsToCsv([FromQuery] TicketFilterModel? filterModel)
         {
-            return (_context.Ticket?.Any(e => e.Id == id)).GetValueOrDefault();
+            List<Ticket> tickets = await _ticketService.GetAllTickets(filterModel);
+            using (StringWriter sw = new StringWriter())
+            {
+                using (CsvWriter csvWriter = new CsvWriter(sw, CultureInfo.InvariantCulture))
+                {
+
+                    await csvWriter.WriteRecordsAsync(tickets);
+                }
+                byte[] csvBytes = Encoding.UTF8.GetBytes(sw.ToString());
+
+                return File(csvBytes, "text/csv", "tickets.csv");
+            }
         }
     }
 }
